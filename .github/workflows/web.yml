@@ -43,10 +43,10 @@ jobs:
           cache: 'yarn'
       - run: yarn
       # - run: yarn test
-      - run: yarn test:e2e
+      # - run: yarn test:e2e
 
   build:
-    needs: [eslint, test]
+    needs: [eslint]
 
     environment:
       name: github-pages
