@@ -2,6 +2,7 @@
 (к теме "EventSource, Websockets")
 
 ![CI](https://github.com/NMYurchenko-max/ws-chat-frontend/actions/workflows/web.yml/badge.svg)
+
 [deploy](https://nmyurchenko-max.github.io/ws-chat-frontend/)
 
 ## Чат
@@ -11,7 +12,10 @@
 
 ### Описание
 1. **Серверная часть** реализована. Ознакомьтесь для понимания, клонируйте для использования.
-   - Rest-сервер (Express) для работы с чатом написан в [chat-backend](https://github.com/NMYurchenko-max/chat-backend.git) и запущен.
+   - Rest-сервер (Express) для работы с чатом написан в 
+  
+  [chat-backend](https://github.com/NMYurchenko-max/chat-backend.git) и запущен.
+
    - Доступен по адресу: https://chat-backend-340a.onrender.com.
 
 2. **Клиентская часть**.
@@ -41,7 +45,12 @@
 ## Использование
 [ws-chat-frontend](https://github.com/NMYurchenko-max/ws-chat-frontend.git)
 
-Для решения проблемы работы с локальным сервером и Rest-сервером (Express) я использовала `localhost` и `https://chat-backend-340a.onrender.com` соответственно, добавив в код `ChatAPI.js` и `createRequest.js` выбор сервера в зависимости от окружения:
+Для решения проблемы работы с локальным сервером и Rest-сервером (Express) я использовала `localhost` и
+
+ `https://chat-backend-340a.onrender.com` соответственно, 
+ 
+ добавив в код `ChatAPI.js` и `createRequest.js` выбор сервера в зависимости от окружения:
+
 ```javascript
 const BACKEND_WS_URL = window.location.hostname === 'localhost' 
 ? 'ws://localhost:3000' : 'wss://chat-backend-340a.onrender.com';
@@ -97,7 +106,27 @@ const BACKEND_WS_URL = window.location.hostname === 'localhost'
 
 ### Тестирование
 Реализованы e2e тесты с использованием Puppeteer для проверки функциональности чата с созданием скриншотов.
+Настройка для использования cros-платформенного окружения:
+```js
+// Динамическое определение url для backend
+  const BACKEND_WS_URL =
+    process.env.BACKEND_WS_URL ||
+    (process.env.NODE_ENV === 'development'
+      ? 'ws://localhost:3000'
+      : 'wss://chat-backend-340a.onrender.com');
+// Проверяем, запущен ли тест в CI
+    const isCI = process.env.CI === 'true';
+    browser = await puppeteer.launch({
+      headless: isCI, // Запускаем браузер в headless режиме, если это CI
+      slowMo: isCI ? 0 : 200, // Замедляем выполнение в локальном режиме
+      args: isCI ? ['--no-sandbox', '--disable-setuid-sandbox'] : [],
+    });
+```
 
+Скрипт для запуска:
+`"test:e2e": "cross-env NODE_ENV=development jest --testPathPatterns=./e2e/ --runInBand"`
+Команда:
+`yarn test:e2e`
 ---
 
 ### Использование
